@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "2cf6096e-8e87-4076-84a7-8ed61bbb5743",
+		"name": "Curso LT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "orderEvent",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\": \"e081ad0f-f83e-4f81-b2d7-23655ac04b8a\",\n\t\"amount\": 10.5,\n\t\"items\":[\n\t\t{\n\t\t\t\"id\": \"3852cb18-9c19-4326-ac77-a1a0264bd98c\",\n\t\t\t\"name\": \"day-one\",\n\t\t\t\"amount\" : 200.00,\n\t\t\t\"quantity\" : \"1\"\n\t\t}\n\t]\n}\n\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orderEvent",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\": \"e081ad0f-f83e-4f81-b2d7-23655ac04b8a\",\n\t\"amount\": 10.5,\n\t\"items\":[\n\t\t{\n\t\t\t\"id\": \"3852cb18-9c19-4326-ac77-a1a0264bd98c\",\n\t\t\t\"name\": \"day-one\",\n\t\t\t\"amount\" : 200.00,\n\t\t\t\"quantity\" : \"1\"\n\t\t}\n\t]\n}\n\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "inventory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"idItem\": \"3852cb18-9c19-4326-ac77-a1a0264bd98c\",\n\t\"amount\" : 200.00,\n\t\"quantity\" : \"10\"\n}\n\n"
+				},
+				"url": {
+					"raw": "http://localhost:8099/inventory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8099",
+					"path": [
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

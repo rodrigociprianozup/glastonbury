@@ -1,40 +1,42 @@
 package br.com.zup.order.configuration;
 
 import br.com.zup.order.event.OrderCreatedEvent;
+import br.com.zup.order.service.OrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class KafkaConfiguration {
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
+
+    @Autowired
+    private OrderService orderService;
+
     private String bootstrap;
+    private ObjectMapper objectMapper;
 
-    @Bean
-    public KafkaAdmin kafkaAdmin() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
-        return new KafkaAdmin(configs);
+    public KafkaConfiguration(@Value(value = "${spring.kafka.bootstrap-servers}") String bootstrap,
+                              ObjectMapper objectMapper) {
+        this.bootstrap = bootstrap;
+        this.objectMapper = objectMapper;
     }
-
-    @Bean
-    public NewTopic message() {
-        return new NewTopic("created-orders", 1, (short) 1);
-    }
-
     @Bean
     public DefaultKafkaProducerFactory messageProducerFactory() {
 
@@ -53,6 +55,19 @@ public class KafkaConfiguration {
     }
 
     @Bean
+    public KafkaAdmin kafkaAdmin() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
+        return new KafkaAdmin(configs);
+    }
+
+    @Bean
+    public NewTopic createdOrder() {
+        return new NewTopic("created-orders", 1, (short) 1);
+    }
+
+
+    @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group-id");
@@ -68,5 +83,26 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
+    }
+
+    @KafkaListener(topics = "reject-inventory", groupId = "order-group-id")
+    public void listenInventoryReject(String message) throws IOException {
+        OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
+        orderService.orderInventoryReject(event);
+
+    }
+    @KafkaListener(topics = "approved-payment", groupId = "order-group-id")
+    public void listenPaymentApproved(String message) throws IOException {
+        OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
+        orderService.paymentApproved(event);
+
+
+    }
+    @KafkaListener(topics = "reject-payment", groupId = "order-group-id")
+    public void listenPaymentReject(String message) throws IOException {
+        OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
+        orderService.paymentReject(event);
+
+
     }
 }

@@ -1,6 +1,10 @@
 package br.com.zup.order.event;
 
+import br.com.zup.order.dto.OrderItemDto;
+
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderCreatedEvent {
@@ -8,16 +12,16 @@ public class OrderCreatedEvent {
     private String orderId;
     private String customerId;
     private BigDecimal amount;
-    private Map<String,Integer> items;
+    private List<OrderItemDto> itemIds;
 
     public OrderCreatedEvent() {
     }
 
-    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, Map<String,Integer> items) {
+    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, List<OrderItemDto> itemIds) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.amount = amount;
-        this.items = items;
+        this.itemIds = itemIds;
     }
 
     public String getOrderId() {
@@ -44,11 +48,11 @@ public class OrderCreatedEvent {
         this.amount = amount;
     }
 
-    public Map<String, Integer> getItems() {
-        return items;
+    public List<OrderItemDto> getItemIds() {
+        return itemIds;
     }
 
-    public void setItems(Map<String, Integer> items) {
-        this.items = items;
+    public void setItemIds(List<OrderItemDto> itemIds) {
+        this.itemIds = itemIds;
     }
 }

@@ -1,2 +1,0 @@
-# Glastonbury
-Tech Leads Training
